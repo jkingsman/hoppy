@@ -55,8 +55,8 @@ var gui = new dat.GUI({
 gui.domElement.id = 'gui';
 
 var motion = gui.addFolder('Motion');
-motion.add(control, 'speed', 0, 20).listen().name('Speed (up/down)');
-motion.add(control, 'rotationSpeed', -0.025, 0.025).listen().name('Rotation (left/right)');
+motion.add(control, 'speed', 0, 20).listen().name('Speed [up]/[down]');
+motion.add(control, 'rotationSpeed', -0.025, 0.025).listen().name('Rotation [left]/[right]');
 
 var scene = gui.addFolder('Scene');
 // scene.add(control, 'SCALE_FACTOR', 0, 4000).listen().name('Scale'); //This is just too buggy
@@ -66,7 +66,7 @@ scene.add(control, 'newScene').name('New Scene');
 
 var vr = gui.addFolder('VR');
 vr.add(control, 'vrSupported').listen().name('WebVR Supported');
-vr.add(control, 'fullScreenOrVR').name('Full Screen/VR (f)');
+vr.add(control, 'fullScreenOrVR').name('Full Screen/VR [f]');
 
 var misc = gui.addFolder('Misc');
 misc.add(control, 'vidID').name('YouTube Video ID').onChange(function(value) {
