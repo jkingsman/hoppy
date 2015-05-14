@@ -16,7 +16,7 @@
     body {
       background-image: url("img/starfield.png");
       background-repeat: repeat;
-      background-size: 200px;
+      background-size: 800px;
       margin: 0px;
       overflow: hidden;
       font-family: 'Lucida Grande', sans-serif;
@@ -114,6 +114,8 @@
 
     // Orbit parameters
     var a, b, c, d, e;
+
+    var orbitInterval;
 
     // Orbit data
     var orbit = {
@@ -265,7 +267,7 @@
       window.addEventListener('keypress', onKeyPress, false);
       window.addEventListener('keydown', onKeyDown, false);
 
-      setInterval(updateOrbit, 7000);
+      orbitInterval = setInterval(updateOrbit, control.newOrbitInterval * 1000);
 
     }
 
@@ -572,7 +574,11 @@
         handleFSorVR();
       } else if (control.vrEnabled && (event.which == 82 || event.which == 114)) {
         // handle 'z'
+        //you can only zero when you're not displaying, so this toggling means we'll zero whether in full view or not
         vrHMDSensor.zeroSensor();
+        handleFSorVR()
+        vrHMDSensor.zeroSensor();
+        handleFSorVR()
       } else if (!isFullscreen && (event.which == 72 || event.which == 104)) {
         // handle 'h'
         toggleVisuals();
@@ -620,7 +626,7 @@
     <p><a href="https://github.com/jkingsman/hoppy">Control systems</a> by <a href="http://jacksbrain.com">Jack Kingsman</a></p>
   </div>
 
-  <iframe id="youtubePlayer" width="0" height="0" src="https://www.youtube.com/embed/84TYi3FOMlU?autoplay=1" frameborder="0"></iframe>
+  <iframe id="youtubePlayer" width="0" height="0" src="https://www.youtube.com/embed/84TYi3FOMlU?autoplay=1&VQ=HD720" frameborder="0"></iframe>
 
   <script>
     //gotta handle this after the div exists
