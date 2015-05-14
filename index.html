@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-  <title>Barry Martin's Hopalong Orbits Visualizer - WebVR</title>
-  <meta property="title" content="Barry Martin's Hopalong Orbits Visualizer - WebVR" />
+  <title>Custom Hopalong Visualizer</title>
+  <meta property="title" content="Custom Hopalong Visualizer" />
   <meta property="description" content="An interactive flight through attractor orbits generated using Barry Martin's Hopalong formula." />
 
-  <meta property="og:title" content="Custom Barry Martin's Hopalong Orbits Visualizer - WebVR" />
+  <meta property="og:title" content="Custom Hopalong Visualizer" />
   <meta property="og:image" content="/graph_image.jpg" />
   <meta property="og:description" content="An interactive flight through attractor orbits generated using Barry Martin's Hopalong formula." />
   <meta charset="utf-8">
@@ -54,9 +54,8 @@
       padding: 16px
     }
 
-    .dg {
-      z-index: 1000 !important;
-      /* override to get above canvas */
+    #gui {
+      z-index: 1000;
     }
   </style>
 </head>
@@ -84,11 +83,11 @@
 
     var VISUALS_VISIBLE = true;
 
-    var NUM_POINTS_SUBSET = 20000;
+    var NUM_POINTS_SUBSET = 40000;
     var NUM_SUBSETS = 7;
     var NUM_POINTS = NUM_POINTS_SUBSET * NUM_SUBSETS;
 
-    var NUM_LEVELS = 10;
+    var NUM_LEVELS = 5;
     var LEVEL_DEPTH = 400;
 
     var DEF_BRIGHTNESS = 1;
@@ -581,21 +580,6 @@
         launchIntoFullscreen(renderCanvas);
       }
     }
-
-    function toggleVisuals() {
-      if (VISUALS_VISIBLE) {
-        document.getElementById('aboutlink').style.display = 'none';
-        document.getElementById('about').style.display = 'none';
-        document.getElementById('info').style.display = 'none';
-        renderCanvas.style.cursor = "none";
-        VISUALS_VISIBLE = false;
-      } else {
-        document.getElementById('aboutlink').style.display = 'block';
-        document.getElementById('info').style.display = 'block';
-        renderCanvas.style.cursor = "";
-        VISUALS_VISIBLE = true;
-      }
-    }
   </script>
 
   <div id="about">
@@ -606,14 +590,32 @@
 
     <p>where a, b, c are random parameters. This is known as the 'Hopalong Attractor'.</p>
     <p>3D rendering done with <a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> and <a href="https://github.com/wwwtyro/three-vr-renderer" target="_blank">vrrenderer.js</a></p>
-    <hr> [Up-Down] Control speed<br />
-    [Left-Right] Control rotation<br />
+    <hr> [Up-Down] Control speed
+    <br /> [Left-Right] Control rotation
+    <br />
     <div id="vrInfo"></div>
     <hr>
     <p><a href="http://iacopoapps.appspot.com/hopalongwebgl/">Original version</a> by <a href="https://plus.google.com/113975837825449148012?rel=author">Iacopo Sassarini</a></p>
     <p><a href="https://github.com/dghost/hopalong-vr">WebVR port</a> by <a href="http://dghost.net">Luke Groeninger</a></p>
     <p><a href="https://github.com/jkingsman/hoppy">Control systems</a> by <a href="http://jacksbrain.com">Jack Kingsman</a></p>
   </div>
+
+  <iframe id="youtubePlayer" width="0" height="0" src="https://www.youtube.com/embed/tKi9Z-f6qX4?autoplay=1" frameborder="0"></iframe>
+
+  <script>
+    //gotta handle this after the div exists
+    function toggleVisuals() {
+      if (VISUALS_VISIBLE) {
+        document.getElementById('about').style.display = 'none';
+        document.getElementById('gui').style.display = 'none';
+        renderCanvas.style.cursor = "none";
+        VISUALS_VISIBLE = false;
+      } else {
+        document.getElementById('gui').style.display = 'block';
+        renderCanvas.style.cursor = "";
+      }
+
+    (function(a, b) {
 </body>
 
 </html>
