@@ -17,7 +17,7 @@
       background-color: #000000;
       margin: 0px;
       overflow: hidden;
-      font-family: Monospace;
+      font-family: 'Lucida Grande', sans-serif;
       font-size: 13px;
       text-align: center;
       font-weight: bold;
@@ -39,15 +39,6 @@
       left: 0;
     }
 
-    #info {
-      color: #fff;
-      position: absolute;
-      top: 0px;
-      width: 100%;
-      padding: 5px;
-      z-index: 100;
-    }
-
     #about {
       text-align: left;
       z-index: 110;
@@ -61,13 +52,6 @@
       opacity: 0.8;
       border-radius: 20px;
       padding: 16px
-    }
-
-    #aboutlink {
-      z-index: 110;
-      position: absolute;
-      top: 5px;
-      left: 5px;
     }
 
     .dg {
@@ -100,9 +84,6 @@
 
     var VISUALS_VISIBLE = true;
 
-    var SCALE_FACTOR = 1500;
-    var CAMERA_BOUND = 200;
-
     var NUM_POINTS_SUBSET = 20000;
     var NUM_SUBSETS = 7;
     var NUM_POINTS = NUM_POINTS_SUBSET * NUM_SUBSETS;
@@ -111,7 +92,7 @@
     var LEVEL_DEPTH = 400;
 
     var DEF_BRIGHTNESS = 1;
-    var DEF_SATURATION = 0.8;
+    var DEF_SATURATION = .9;
 
     var SPRITE_SIZE = Math.ceil(3 * window.innerWidth / 1600);
 
@@ -166,12 +147,7 @@
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = window.innerHeight / 2;
 
-    //defined in GUI.js
-    control.speed = 1.5;
-    control.rotationSpeed = 0.002;
-    var vrSupported = false;
-    var vrEnabled = false;
-    var isFullscreen = false;
+    isFullscreen = false;
 
     window.addEventListener("load", function() {
       if (navigator.getVRDevices) {
@@ -179,8 +155,8 @@
       } else if (navigator.mozGetVRDevices) {
         navigator.mozGetVRDevices(vrDeviceCallback);
       } else {
-        var div = document.getElementById('info');
-        div.innerHTML = div.innerHTML + "\n<br /> [H] Toggle info and cursor - [F] Enter fullscreen mode";
+        var div = document.getElementById('vrInfo');
+        div.innerHTML = div.innerHTML + "\n<br /> [H] Toggle info and cursor<br />[F] Enter fullscreen mode";
         div.innerHTML = div.innerHTML + "\n<br />A <a href=http://webvr.info>WebVR compatible browser</a> is required for VR mode";
       }
 
@@ -190,7 +166,7 @@
     render();
 
     function vrDeviceCallback(vrdevs) {
-      vrSupported = true;
+      control.vrSupported = true;
 
       for (var i = 0; i < vrdevs.length; ++i) {
         if (vrdevs[i] instanceof HMDVRDevice) {
@@ -206,8 +182,8 @@
         }
       }
       vrrenderer = new THREE.VRRenderer(renderer, vrHMD);
-      var div = document.getElementById('info');
-      div.innerHTML = div.innerHTML + "\n<br /> [F] Enter VR Mode - [R] Reset sensor orientation";
+      var div = document.getElementById('vrInfo');
+      div.innerHTML = div.innerHTML + "\n<br /> [F] Enter VR Mode<br />[R] Reset sensor orientation";
     }
 
     function init() {
@@ -228,8 +204,8 @@
 
       sprite1 = THREE.ImageUtils.loadTexture("img/galaxy.png");
 
-      camera = new THREE.PerspectiveCamera(60, renderTargetWidth / renderTargetHeight, 1, 3 * SCALE_FACTOR);
-      camera.position.set(0, 0, SCALE_FACTOR / 2);
+      camera = new THREE.PerspectiveCamera(60, renderTargetWidth / renderTargetHeight, 1, 3 * control.SCALE_FACTOR);
+      camera.position.set(0, 0, control.SCALE_FACTOR / 2);
 
       scene = new THREE.Scene();
       scene.fog = new THREE.FogExp2(0x000000, 0.0012);
@@ -261,7 +237,7 @@
           particles.mySubset = s;
           particles.position.x = 0;
           particles.position.y = 0;
-          particles.position.z = -LEVEL_DEPTH * k - (s * LEVEL_DEPTH / NUM_SUBSETS) + SCALE_FACTOR / 2;
+          particles.position.z = -LEVEL_DEPTH * k - (s * LEVEL_DEPTH / NUM_SUBSETS) + control.SCALE_FACTOR / 2;
           particles.needsUpdate = 0;
           scene.add(particles);
         }
@@ -284,7 +260,7 @@
     function render() {
       requestAnimationFrame(render);
 
-      if (vrEnabled && vrHMDSensor) {
+      if (control.vrEnabled && vrHMDSensor) {
         // get state
         var state = vrHMDSensor.getState();
 
@@ -292,7 +268,7 @@
         if (state.position) {
           camera.position.set(state.position.x * 50,
             state.position.y * 50,
-            state.position.z * 50 + SCALE_FACTOR / 2);
+            state.position.z * 50 + control.SCALE_FACTOR / 2);
         }
 
         // if the orientation is reported use it
@@ -306,15 +282,15 @@
         }
       } else {
         // move the camera position based on mouse position/taps
-        if (camera.position.x >= -CAMERA_BOUND && camera.position.x <= CAMERA_BOUND) {
+        if (camera.position.x >= -control.CAMERA_BOUND && camera.position.x <= control.CAMERA_BOUND) {
           camera.position.x += (mouseX - camera.position.x) * 0.05;
-          if (camera.position.x < -CAMERA_BOUND) camera.position.x = -CAMERA_BOUND;
-          if (camera.position.x > CAMERA_BOUND) camera.position.x = CAMERA_BOUND;
+          if (camera.position.x < -control.CAMERA_BOUND) camera.position.x = -control.CAMERA_BOUND;
+          if (camera.position.x > control.CAMERA_BOUND) camera.position.x = control.CAMERA_BOUND;
         }
-        if (camera.position.y >= -CAMERA_BOUND && camera.position.y <= CAMERA_BOUND) {
+        if (camera.position.y >= -control.CAMERA_BOUND && camera.position.y <= control.CAMERA_BOUND) {
           camera.position.y += (-mouseY - camera.position.y) * 0.05;
-          if (camera.position.y < -CAMERA_BOUND) camera.position.y = -CAMERA_BOUND;
-          if (camera.position.y > CAMERA_BOUND) camera.position.y = CAMERA_BOUND;
+          if (camera.position.y < -control.CAMERA_BOUND) camera.position.y = -control.CAMERA_BOUND;
+          if (camera.position.y > control.CAMERA_BOUND) camera.position.y = control.CAMERA_BOUND;
         }
         // look straight ahead
         camera.lookAt(scene.position);
@@ -325,7 +301,7 @@
         scene.children[i].position.z += control.speed;
         scene.children[i].rotation.z += control.rotationSpeed;
         // if the particle level has passed the fade distance
-        if (scene.children[i].position.z >= ((NUM_LEVELS / 2) - 1) * LEVEL_DEPTH + SCALE_FACTOR) {
+        if (scene.children[i].position.z >= ((NUM_LEVELS / 2) - 1) * LEVEL_DEPTH + control.SCALE_FACTOR) {
           // move the particle level back in front of the camera
           scene.children[i].position.z = -((NUM_LEVELS / 2) - 1) * LEVEL_DEPTH;
           if (scene.children[i].needsUpdate == 1) {
@@ -338,7 +314,7 @@
       }
 
       // call the proper renderer
-      if (vrEnabled) {
+      if (control.vrEnabled) {
         vrrenderer.render(scene, camera);
       } else {
         renderer.render(scene, camera);
@@ -373,7 +349,7 @@
       var subsets = orbit.subsets;
       var num_points_subset_l = NUM_POINTS_SUBSET;
       var num_points_l = NUM_POINTS;
-      var scale_factor_l = SCALE_FACTOR;
+      var scale_factor_l = control.SCALE_FACTOR;
 
       var xMin = 0,
         xMax = 0,
@@ -511,20 +487,20 @@
       if (!document.webkitFullscreenElement && !document.mozFullScreenElement) {
         isFullscreen = false;
         renderCanvas.style.cursor = "";
-        if (vrSupported) {
-          vrEnabled = false;
+        if (control.vrSupported) {
+          control.vrEnabled = false;
           // unhide the mouse and set the device pixel ratio correctly
           renderer.devicePixelRatio = window.devicePixelRatio || 1;
         }
       } else {
         isFullscreen = true;
         renderCanvas.style.cursor = "none";
-        if (vrSupported) {
-          vrEnabled = true;
+        if (control.vrSupported) {
+          control.vrEnabled = true;
           // reset the sensor on enable
           vrHMDSensor.zeroSensor();
           // reset the camera position
-          camera.position.set(0, 0, SCALE_FACTOR / 2);
+          camera.position.set(0, 0, control.SCALE_FACTOR / 2);
           // hide the mouse, and set the device pixel ratio to 1
           renderer.devicePixelRatio = 1;
         }
@@ -540,7 +516,7 @@
       windowHalfY = window.innerHeight / 2;
 
       // use recommended render target size if in VR
-      if (vrEnabled) {
+      if (control.vrEnabled) {
         if ('getRecommendedEyeRenderRect' in vrHMD) {
           var leftEyeViewport = vrHMD.getRecommendedEyeRenderRect("left");
           var rightEyeViewport = vrHMD.getRecommendedEyeRenderRect("right");
@@ -571,29 +547,15 @@
       // hande up/down/left/right keys
       if (event.keyCode == 38 && control.speed < 20) control.speed += 0.25;
       else if (event.keyCode == 40 && control.speed > 0) control.speed -= 0.25;
-      else if (event.keyCode == 37 && control.rotationSpeed < 0.25) control.rotationSpeed += 0.001;
-      else if (event.keyCode == 39 && control.rotationSpeed > -0.25) control.rotationSpeed -= 0.001;
+      else if (event.keyCode == 37 && control.rotationSpeed < 0.025) control.rotationSpeed += 0.001;
+      else if (event.keyCode == 39 && control.rotationSpeed > -0.025) control.rotationSpeed -= 0.001;
     }
 
     function onKeyPress(event) {
       // handle 'f'
       if (event.which == 70 || event.which == 102) {
-        if (vrEnabled || isFullscreen) {
-          exitFullscreen();
-        } else if (vrSupported) {
-          if (renderCanvas.mozRequestFullScreen) {
-            renderCanvas.mozRequestFullScreen({
-              vrDisplay: vrHMD
-            });
-          } else if (renderCanvas.webkitRequestFullscreen) {
-            renderCanvas.webkitRequestFullscreen({
-              vrDisplay: vrHMD,
-            });
-          }
-        } else {
-          launchIntoFullscreen(renderCanvas);
-        }
-      } else if (vrEnabled && (event.which == 82 || event.which == 114)) {
+        handleFSorVR();
+      } else if (control.vrEnabled && (event.which == 82 || event.which == 114)) {
         // handle 'z'
         vrHMDSensor.zeroSensor();
       } else if (!isFullscreen && (event.which == 72 || event.which == 104)) {
@@ -602,12 +564,21 @@
       }
     }
 
-
-    function showHideAbout() {
-      if (document.getElementById('about').style.display == "block") {
-        document.getElementById('about').style.display = "none";
+    function handleFSorVR() {
+      if (control.vrEnabled || isFullscreen) {
+        exitFullscreen();
+      } else if (control.vrSupported) {
+        if (renderCanvas.mozRequestFullScreen) {
+          renderCanvas.mozRequestFullScreen({
+            vrDisplay: vrHMD
+          });
+        } else if (renderCanvas.webkitRequestFullscreen) {
+          renderCanvas.webkitRequestFullscreen({
+            vrDisplay: vrHMD,
+          });
+        }
       } else {
-        document.getElementById('about').style.display = "block";
+        launchIntoFullscreen(renderCanvas);
       }
     }
 
@@ -627,14 +598,6 @@
     }
   </script>
 
-    <div id="info">
-    </div>
-
-
-  <div id="aboutlink">
-    <a href="javascript:showHideAbout()">About</a>
-  </div>
-
   <div id="about">
     <b>Barry Martin's Hopalong Orbits Visualizer</b>
     <p>These orbits are generated iterating this simple algorithm:</p>
@@ -643,13 +606,13 @@
 
     <p>where a, b, c are random parameters. This is known as the 'Hopalong Attractor'.</p>
     <p>3D rendering done with <a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> and <a href="https://github.com/wwwtyro/three-vr-renderer" target="_blank">vrrenderer.js</a></p>
-    <hr>
-
-    [Up-Down] Control speed - [Left-Right] Control rotation
-
+    <hr> [Up-Down] Control speed<br />
+    [Left-Right] Control rotation<br />
+    <div id="vrInfo"></div>
     <hr>
     <p><a href="http://iacopoapps.appspot.com/hopalongwebgl/">Original version</a> by <a href="https://plus.google.com/113975837825449148012?rel=author">Iacopo Sassarini</a></p>
     <p><a href="https://github.com/dghost/hopalong-vr">WebVR port</a> by <a href="http://dghost.net">Luke Groeninger</a></p>
+    <p><a href="https://github.com/jkingsman/hoppy">Control systems</a> by <a href="http://jacksbrain.com">Jack Kingsman</a></p>
   </div>
 </body>
 
