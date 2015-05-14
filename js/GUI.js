@@ -65,7 +65,7 @@ var scene = gui.addFolder('Scene');
 // scene.add(control, 'SCALE_FACTOR', 0, 4000).listen().name('Scale'); //This is just too buggy
 scene.add(control, 'CAMERA_BOUND', 0, 800).listen().name('Orbit Freedom').onChange(control.initCamera);
 scene.add(control, 'FOG_DENSITY', 0, 0.01).listen().name('Fog Density').onChange(control.initFog);
-scene.add(control, 'newScene').name('New Scene');
+scene.add(control, 'newScene').name('New Scene [space]');
 
 var vr = gui.addFolder('VR');
 vr.add(control, 'vrSupported').listen().name('WebVR Supported');

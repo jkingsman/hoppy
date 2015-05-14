@@ -14,7 +14,9 @@
   <canvas id="render-canvas"></canvas>
   <style>
     body {
-      background-color: #000000;
+      background-image: url("img/starfield.png");
+      background-repeat: repeat;
+      background-size: 200px;
       margin: 0px;
       overflow: hidden;
       font-family: 'Lucida Grande', sans-serif;
@@ -137,9 +139,11 @@
       orbit.subsets.push(subsetPoints);
     }
 
-    var meter = new FPSMeter({ theme: 'hopalong'});
+    var meter = new FPSMeter({
+      theme: 'hopalong'
+    });
     var showMeter = true;
-    
+
     var container;
     var camera, scene, renderer, vrrenderer, composer, hueValues = [];
     var renderCanvas, vrHMD, vrHMDSensor;
@@ -198,9 +202,12 @@
         canvas: renderCanvas,
         clearColor: 0x000000,
         clearAlpha: 1,
+        alpha: true,
         antialias: false,
         devicePixelRatio: window.devicePixelRatio || 1,
       });
+
+      renderer.setClearColor(0x000000, 0);
 
       // Setup renderer and effects
       renderer.setSize(renderTargetWidth, renderTargetHeight);
@@ -569,8 +576,12 @@
       } else if (!isFullscreen && (event.which == 72 || event.which == 104)) {
         // handle 'h'
         toggleVisuals();
+      } else if (event.which == 32) {
+        init();
+        render();
       }
     }
+
 
     function handleFSorVR() {
       if (control.vrEnabled || isFullscreen) {
