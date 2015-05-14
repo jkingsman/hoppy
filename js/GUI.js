@@ -26,6 +26,9 @@ var control = {
   fullScreenOrVR: function() {
     handleFSorVR();
   },
+  zeroSensor: function() {
+    vrHMDSensor.zeroSensor();
+  },
 
   //misc
   vidID: 'tKi9Z-f6qX4',
@@ -67,6 +70,7 @@ scene.add(control, 'newScene').name('New Scene');
 var vr = gui.addFolder('VR');
 vr.add(control, 'vrSupported').listen().name('WebVR Supported');
 vr.add(control, 'fullScreenOrVR').name('Full Screen/VR [f]');
+vr.add(control, 'zeroSensor').name('Zero VR Sensor [z]');
 
 var misc = gui.addFolder('Misc');
 misc.add(control, 'vidID').name('YouTube Video ID').onChange(function(value) {
