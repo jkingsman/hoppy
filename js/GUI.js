@@ -35,6 +35,15 @@ var control = {
     } else {
       document.getElementById('about').style.display = "block";
     }
+  },
+  toggleFPS: function() {
+    if (showMeter) {
+      meter.hide();
+      showMeter = false;
+    } else {
+      meter.show();
+      showMeter = true;
+    }
   }
 
 };
@@ -63,7 +72,8 @@ var misc = gui.addFolder('Misc');
 misc.add(control, 'vidID').name('YouTube Video ID').onChange(function(value) {
   document.getElementById('youtubePlayer').setAttribute('src', 'https://www.youtube.com/embed/' + value + '?autoplay=1&VQ=HD720');
 });
-misc.add(control, 'toggleAbout').listen().name('Information & Credits');
+misc.add(control, 'toggleAbout').listen().name('Toggle Info & Credits');
+misc.add(control, 'toggleFPS').listen().name('Toggle FPS');
 
 motion.open();
 scene.open();
